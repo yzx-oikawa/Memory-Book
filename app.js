@@ -13,13 +13,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
-seedDB();
+// seedDB();
 
 app.get("/", function (req, res) {
     res.render("landing");
 })
 
-//INDEX - show all memories
+// INDEX - show all memories
 app.get("/memories", function (req, res) {
     // Get all memories from DB
     Memory.find({}, function (err, allMemories) {
@@ -31,9 +31,9 @@ app.get("/memories", function (req, res) {
     })
 });
 
-//CREATE - add new memory to DB
+// CREATE - add new memory to DB
 app.post("/memories", function (req, res) {
-    // get data from form and add to memories array
+    // Get data from form and add to memories array
     var title = req.body.title;
     var image = req.body.image;
     var desc = req.body.description;
@@ -43,25 +43,26 @@ app.post("/memories", function (req, res) {
         if (err) {
             console.log(err);
         } else {
-            //redirect back to memories page
+            // Redirect back to memories page
             res.redirect("/memories");
         }
     });
 });
 
-//NEW - show form to create new memory
+// NEW - show form to create new memory
 app.get("/memories/new", function (req, res) {
     res.render("new.ejs");
 });
 
 // SHOW - shows more info about one memory
 app.get("/memories/:id", function (req, res) {
-    //find the memory with provided ID
-    Memory.findById(req.params.id, function (err, foundMemory) {
+    // Find the memory with provided ID
+    // And find all comments for that memory
+    Memory.findById(req.params.id).populate("comments").exec(function (err, foundMemory) {
         if (err) {
             console.log(err);
         } else {
-            //render show template with that campground
+            // Render show template with that memory
             res.render("show", { memory: foundMemory });
         }
     });

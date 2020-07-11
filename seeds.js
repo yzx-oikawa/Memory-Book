@@ -1,5 +1,6 @@
 var mongoose = require("mongoose");
 var Memory = require("./models/memory");
+var Comment = require("./models/comment");
 
 var data = [
     {
