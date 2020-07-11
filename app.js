@@ -1,7 +1,9 @@
 var express = require("express"),
     app = express(),
     bodyParser = require("body-parser"),
-    mongoose = require("mongoose");
+    mongoose = require("mongoose"),
+    Memory = require("./models/memory"),
+    seedDB = require("./seeds");
 
 mongoose.connect("mongodb://localhost/memory_book", {
     useNewUrlParser: true,
@@ -11,43 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
-// SCHEMA SETUP
-var memorySchema = new mongoose.Schema({
-    title: String,
-    image: String,
-    description: String
-});
-
-
-var Memory = mongoose.model("Memory", memorySchema);
-
-// Memory.create(
-//     {
-//         title: "Saihanba National Forest Park",
-//         image: "/images/Saihanba National Forest Park.jpg",
-//         description: ""
-
-//     },
-//     function (err, memory) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log("NEWLY CREATED MEMORY: ");
-//             console.log(memory);
-//         }
-//     });
-
-var memories = [
-    { title: "Beihang University", image: "/images/Beihang University.jpg" },
-    { title: "Saihanba National Forest Park", image: "/images/Saihanba National Forest Park.jpg" },
-    { title: "Clearwater Beach, Orlando", image: "/images/Clearwater Beach.jpg" },
-    { title: "Kennedy Space Center", image: "/images/Kennedy Space Center.jpg" },
-    { title: "Kiyomizu Temple", image: "/images/Kiyomizu Temple.jpg" },
-    { title: "Kyoto University", image: "/images/Kyoto University.jpg" },
-    { title: "Universal Studios Japan", image: "/images/Universal Studios Japan.jpg" },
-    { title: "Beijing Solana", image: "/images/Beijing Solana.jpg" }
-];
-
+seedDB();
 
 app.get("/", function (req, res) {
     res.render("landing");
@@ -89,14 +55,14 @@ app.get("/memories/new", function (req, res) {
 });
 
 // SHOW - shows more info about one memory
-app.get("/memories/:id", function(req, res){
+app.get("/memories/:id", function (req, res) {
     //find the memory with provided ID
-    Memory.findById(req.params.id, function(err, foundMemory){
-        if(err){
+    Memory.findById(req.params.id, function (err, foundMemory) {
+        if (err) {
             console.log(err);
         } else {
             //render show template with that campground
-            res.render("show", {memory: foundMemory});
+            res.render("show", { memory: foundMemory });
         }
     });
 })
