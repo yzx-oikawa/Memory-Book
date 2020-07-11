@@ -1,20 +1,51 @@
-var express = require("express");
-var app = express();
-var bodyParser = require("body-parser");
+var express = require("express"),
+    app = express(),
+    bodyParser = require("body-parser"),
+    mongoose = require("mongoose");
 
+mongoose.connect("mongodb://localhost/memory_book", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+});
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
+// SCHEMA SETUP
+var memorySchema = new mongoose.Schema({
+    title: String,
+    image: String,
+    description: String
+});
+
+
+var Memory = mongoose.model("Memory", memorySchema);
+
+// Memory.create(
+//     {
+//         title: "Saihanba National Forest Park",
+//         image: "/images/Saihanba National Forest Park.jpg",
+//         description: ""
+
+//     },
+//     function (err, memory) {
+//         if (err) {
+//             console.log(err);
+//         } else {
+//             console.log("NEWLY CREATED MEMORY: ");
+//             console.log(memory);
+//         }
+//     });
+
 var memories = [
-    { name: "Beihang University", image: "/images/Beihang University.jpg" },
-    { name: "Saihanba National Forest Park", image: "/images/Saihanba National Forest Park.jpg" },
-    { name: "Clearwater Beach, Orlando", image: "/images/Clearwater Beach.jpg" },
-    { name: "Kennedy Space Center", image: "/images/Kennedy Space Center.jpg" },
-    { name: "Kiyomizu Temple", image: "/images/Kiyomizu Temple.jpg" },
-    { name: "Kyoto University", image: "/images/Kyoto University.jpg" },
-    { name: "Universal Studios Japan", image: "/images/Universal Studios Japan.jpg" },
-    { name: "Beijing Solana", image: "/images/Beijing Solana.jpg" }
+    { title: "Beihang University", image: "/images/Beihang University.jpg" },
+    { title: "Saihanba National Forest Park", image: "/images/Saihanba National Forest Park.jpg" },
+    { title: "Clearwater Beach, Orlando", image: "/images/Clearwater Beach.jpg" },
+    { title: "Kennedy Space Center", image: "/images/Kennedy Space Center.jpg" },
+    { title: "Kiyomizu Temple", image: "/images/Kiyomizu Temple.jpg" },
+    { title: "Kyoto University", image: "/images/Kyoto University.jpg" },
+    { title: "Universal Studios Japan", image: "/images/Universal Studios Japan.jpg" },
+    { title: "Beijing Solana", image: "/images/Beijing Solana.jpg" }
 ];
 
 
@@ -22,9 +53,53 @@ app.get("/", function (req, res) {
     res.render("landing");
 })
 
+//INDEX - show all memories
 app.get("/memories", function (req, res) {
-    res.render("memories", { memories: memories });
+    // Get all memories from DB
+    Memory.find({}, function (err, allMemories) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("index", { memories: allMemories });
+        }
+    })
 });
+
+//CREATE - add new memory to DB
+app.post("/memories", function (req, res) {
+    // get data from form and add to memories array
+    var title = req.body.title;
+    var image = req.body.image;
+    var desc = req.body.description;
+    var newMemory = { title: title, image: image, description: desc }
+    // Create a new memory and save to DB
+    Memory.create(newMemory, function (err, newlyCreated) {
+        if (err) {
+            console.log(err);
+        } else {
+            //redirect back to memories page
+            res.redirect("/memories");
+        }
+    });
+});
+
+//NEW - show form to create new memory
+app.get("/memories/new", function (req, res) {
+    res.render("new.ejs");
+});
+
+// SHOW - shows more info about one memory
+app.get("/memories/:id", function(req, res){
+    //find the memory with provided ID
+    Memory.findById(req.params.id, function(err, foundMemory){
+        if(err){
+            console.log(err);
+        } else {
+            //render show template with that campground
+            res.render("show", {memory: foundMemory});
+        }
+    });
+})
 
 app.listen(3001, function () {
     console.log("Memory Book Server listening on port 3001");
