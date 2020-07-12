@@ -56,6 +56,13 @@ function seedDB() {
             });
         });
     });
+
+    Comment.remove({}, function (err) {
+        if (err) {
+            console.log(err);
+        }
+        console.log("Removed all comments!");
+    });
 }
 
 module.exports = seedDB;
