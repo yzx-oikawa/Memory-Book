@@ -3,6 +3,7 @@ var express = require("express"),
     bodyParser = require("body-parser"),
     mongoose = require("mongoose"),
     Memory = require("./models/memory"),
+    Comment = require("./models/comment"),
     seedDB = require("./seeds");
 
 mongoose.connect("mongodb://localhost/memory_book", {
@@ -26,7 +27,7 @@ app.get("/memories", function (req, res) {
         if (err) {
             console.log(err);
         } else {
-            res.render("index", { memories: allMemories });
+            res.render("memories/index", { memories: allMemories });
         }
     })
 });
@@ -51,7 +52,7 @@ app.post("/memories", function (req, res) {
 
 // NEW - show form to create new memory
 app.get("/memories/new", function (req, res) {
-    res.render("new.ejs");
+    res.render("memories/new.ejs");
 });
 
 // SHOW - shows more info about one memory
@@ -63,10 +64,47 @@ app.get("/memories/:id", function (req, res) {
             console.log(err);
         } else {
             // Render show template with that memory
-            res.render("show", { memory: foundMemory });
+            res.render("memories/show", { memory: foundMemory });
         }
     });
 })
+
+
+// ====================
+// COMMENTS ROUTES
+// ====================
+
+app.get("/memories/:id/comments/new", function (req, res) {
+    // Find memory by id
+    Memory.findById(req.params.id, function (err, memory) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render("comments/new", { memory: memory });
+        }
+    })
+});
+
+app.post("/memories/:id/comments", function (req, res) {
+    // Find memory by id
+    Memory.findById(req.params.id, function (err, memory) {
+        if (err) {
+            console.log(err);
+            res.redirect("/memories");
+        } else {
+            Comment.create(req.body.comment, function (err, comment) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    memory.comments.push(comment);
+                    memory.save();
+                    res.redirect('/memories/' + memory._id);
+                }
+            });
+        }
+    });
+});
+
 
 app.listen(3001, function () {
     console.log("Memory Book Server listening on port 3001");
