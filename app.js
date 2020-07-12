@@ -2,8 +2,11 @@ var express = require("express"),
     app = express(),
     bodyParser = require("body-parser"),
     mongoose = require("mongoose"),
+    passport = require("passport"),
+    LocalStrategy = require("passport-local"),
     Memory = require("./models/memory"),
     Comment = require("./models/comment"),
+    User = require("./models/user"),
     seedDB = require("./seeds");
 
 mongoose.connect("mongodb://localhost/memory_book", {
@@ -15,6 +18,28 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 
 // seedDB();
+
+// Passport Configuration
+app.use(require("express-session")({
+    secret: "Call me by your name",
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+// Pass parameters to every template
+app.use(function (req, res, next) {
+    res.locals.currentUser = req.user;
+    next();
+})
+
+// ====================
+// MEMORIES ROUTES
+// ====================
 
 app.get("/", function (req, res) {
     res.render("landing");
@@ -74,7 +99,8 @@ app.get("/memories/:id", function (req, res) {
 // COMMENTS ROUTES
 // ====================
 
-app.get("/memories/:id/comments/new", function (req, res) {
+// NEW - show form to create new comment
+app.get("/memories/:id/comments/new", isLoggedIn, function (req, res) {
     // Find memory by id
     Memory.findById(req.params.id, function (err, memory) {
         if (err) {
@@ -85,7 +111,8 @@ app.get("/memories/:id/comments/new", function (req, res) {
     })
 });
 
-app.post("/memories/:id/comments", function (req, res) {
+// CREATE - add new comment to DB
+app.post("/memories/:id/comments", isLoggedIn, function (req, res) {
     // Find memory by id
     Memory.findById(req.params.id, function (err, memory) {
         if (err) {
@@ -104,6 +131,56 @@ app.post("/memories/:id/comments", function (req, res) {
         }
     });
 });
+
+
+// ====================
+// AUTH ROUTES
+// ====================
+
+// Show sign up form
+app.get("/register", function (req, res) {
+    res.render("register");
+});
+
+// Handle sign up logic
+app.post("/register", function (req, res) {
+    var newUser = new User({ username: req.body.username });
+    User.register(newUser, req.body.password, function (err, user) {
+        if (err) {
+            console.log(err);
+            return res.render("register");
+        }
+        passport.authenticate("local")(req, res, function () {
+            res.redirect("/memories");
+        });
+    });
+});
+
+// Show login form
+app.get("/login", function (req, res) {
+    res.render("login");
+});
+
+// Handle login logic
+app.post("/login", passport.authenticate("local",
+    {
+        successRedirect: "/memories",
+        failureRedirect: "/login"
+    }), function (req, res) {
+});
+
+// Handle log out logic
+app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/memories");
+});
+
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
 
 
 app.listen(3001, function () {
