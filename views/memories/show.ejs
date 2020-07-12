@@ -13,18 +13,18 @@
         <div class="col-md-9">
             <div class="thumbnail">
                 <img class="img-responsive" src="<%= memory.image %>">
-
                 <div class="caption">
                     <h4><a><%= memory.title %></a></h4>
                     <p><%= memory.description %></p>
                 </div>
-                <div class="well">
-                    <div class="text-right">
-                        <a class="btn btn-success" href="/memories/<%= memory._id %>/comments/new">Add New
-                            Comment</a>
-                    </div>
-                    <hr>
-                    <% memory.comments.forEach(function(comment){ %>
+            </div>
+            <div class="well">
+                <div class="text-right">
+                    <a class="btn btn-success" href="/memories/<%= memory._id %>/comments/new">Add New
+                        Comment</a>
+                </div>
+                <hr>
+                <% memory.comments.forEach(function(comment){ %>
                     <div class="row">
                         <div class="col-md-12">
                             <strong><%= comment.author.username %></strong>
@@ -34,9 +34,8 @@
                             </p>
                         </div>
                     </div>
-                    <% }) %>
-                </div>
-            </div>
+                <% }) %>
+            </div>   
         </div>
     </div>
 </div>
