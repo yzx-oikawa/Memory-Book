@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
-Memory = require("../models/memory");
+var Memory = require("../models/memory");
+var middleware = require("../middleware");
 
 // ====================
 // MEMORIES ROUTES
