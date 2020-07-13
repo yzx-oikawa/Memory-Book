@@ -16,6 +16,9 @@
                 <div class="caption">
                     <h4><a><%= memory.title %></a></h4>
                     <p><%= memory.description %></p>
+                    <p>
+                        <em>Submitted By <%= memory.author.username %></em>
+                    </p>
                 </div>
             </div>
             <div class="well">
@@ -25,17 +28,17 @@
                 </div>
                 <hr>
                 <% memory.comments.forEach(function(comment){ %>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <strong><%= comment.author.username %></strong>
-                            <span class="pull-right">10 days ago</span>
-                            <p>
-                                <%= comment.text %>
-                            </p>
-                        </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <strong><%= comment.author.username %></strong>
+                        <span class="pull-right">10 days ago</span>
+                        <p>
+                            <%= comment.text %>
+                        </p>
                     </div>
+                </div>
                 <% }) %>
-            </div>   
+            </div>
         </div>
     </div>
 </div>

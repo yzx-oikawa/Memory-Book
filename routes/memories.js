@@ -19,25 +19,30 @@ router.get("/", function (req, res) {
 });
 
 // CREATE - add new memory to DB
-router.post("/", function (req, res) {
+router.post("/", isLoggedIn, function (req, res) {
     // Get data from form and add to memories array
     var title = req.body.title;
     var image = req.body.image;
     var desc = req.body.description;
-    var newMemory = { title: title, image: image, description: desc }
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    }
+    var newMemory = { title: title, image: image, description: desc, author: author }
     // Create a new memory and save to DB
     Memory.create(newMemory, function (err, newlyCreated) {
         if (err) {
             console.log(err);
         } else {
             // Redirect back to memories page
+            console.log(newlyCreated);
             res.redirect("/memories");
         }
     });
 });
 
 // NEW - show form to create new memory
-router.get("/new", function (req, res) {
+router.get("/new", isLoggedIn, function (req, res) {
     res.render("memories/new.ejs");
 });
 
@@ -54,5 +59,13 @@ router.get("/:id", function (req, res) {
         }
     });
 })
+
+// Middleware
+function isLoggedIn(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
 
 module.exports = router;
