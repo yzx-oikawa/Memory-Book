@@ -1,11 +1,11 @@
 var express = require("express");
 var router = express.Router();
+
 var Memory = require("../models/memory");
+var Comment = require("../models/comment");
 var middleware = require("../middleware");
 
-// ====================
-// MEMORIES ROUTES
-// ====================
+// ================== /memories ====================
 
 // INDEX - show all memories
 router.get("/", function (req, res) {
@@ -29,14 +29,16 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
         id: req.user._id,
         username: req.user.username
     }
-    var newMemory = { title: title, image: image, description: desc, author: author }
+    var newMemory = new Memory({ title: title, image: image, description: desc, author: author });
     // Create a new memory and save to DB
-    Memory.create(newMemory, function (err, newlyCreated) {
+    newMemory.save(function (err, memory) {
         if (err) {
             console.log(err);
+            req.flash("error", "Something went wrong");
+            res.redirect("back");
         } else {
             // Redirect back to memories page
-            console.log(newlyCreated);
+            req.flash("success", "Memory saved successfully");
             res.redirect("/memories");
         }
     });
@@ -52,8 +54,9 @@ router.get("/:id", function (req, res) {
     // Find the memory with provided ID
     // And find all comments for that memory
     Memory.findById(req.params.id).populate("comments").exec(function (err, foundMemory) {
-        if (err) {
-            console.log(err);
+        if (err || !foundMemory) {
+            req.flash("error", "Memory not found");
+            res.redirect("/memories");
         } else {
             // Render show template with that memory
             res.render("memories/show", { memory: foundMemory });
@@ -72,22 +75,28 @@ router.get("/:id/edit", middleware.checkMemoryOwnership, function (req, res) {
 router.put("/:id", middleware.checkMemoryOwnership, function (req, res) {
     Memory.findByIdAndUpdate(req.params.id, req.body.memory, function (err, updatedMemory) {
         if (err) {
-            res.redirect("/memories");
+            req.flash("error", "Something went wrong");
+            res.redirect("back");
         } else {
+            req.flash("success", "Memory info updated");
             res.redirect("/memories/" + req.params.id);
         }
     })
 })
 
 // DESTROY
-router.delete("/:id", middleware.checkMemoryOwnership, function(req, res){
-    Memory.findByIdAndRemove(req.params.id, function(err) {
-        if(err) {
-            res.redirect("/memories");
-        } else {
-            res.redirect("/memories");
-        }
-    })
+router.delete("/:id", middleware.checkMemoryOwnership, async function (req, res) {
+    // Remove all comments when deleting a memory
+    try {
+        let foundMemory = await Memory.findByIdAndRemove(req.params.id);
+        await foundMemory.remove();
+        await Comment.remove({"_id": {"$in": foundMemory.comments}});
+        req.flash("success", "Memory deleted");
+        res.redirect("/memories");
+    } catch (err) {
+        req.flash("error", "Something went wrong");
+        res.redirect("back");
+    }
 })
 
 module.exports = router;

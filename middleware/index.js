@@ -6,45 +6,57 @@ var middlewareObj = {};
 middlewareObj.isLoggedIn = function (req, res, next) {
     if (req.isAuthenticated()) {
         return next();
+    } else {
+        req.flash("error", "You need to be logged in first!");
+        res.redirect("/login");
     }
-    res.redirect("/login");
 }
 
 middlewareObj.checkMemoryOwnership = function (req, res, next) {
+    // Check if the user is logged in
     if (req.isAuthenticated()) {
         Memory.findById(req.params.id, function (err, foundMemory) {
-            if (err) {
+            if (err || !foundMemory) {
+                req.flash("error", "Memory not found");
                 res.redirect("/memories");
             } else {
-                // does user own the memory?
+                // Check if the user owns the memory
+                // foundMemory.author.id is an object while req.user._id is a string
                 if (foundMemory.author.id.equals(req.user._id)) {
-                    next();
+                    return next();
                 } else {
+                    req.flash("error", "Permission denied!");
                     res.redirect("/memories");
                 }
             }
         });
     } else {
-        res.redirect("/login");
+        req.flash("error", "You need to be logged in first!");
+        res.redirect("/memories");
     }
 }
 
 middlewareObj.checkCommentOwnership = function (req, res, next) {
+    // Check if the user is logged in
     if (req.isAuthenticated()) {
         Comment.findById(req.params.comment_id, function (err, foundComment) {
-            if (err) {
-                res.redirect("back");
+            if (err || !foundComment) {
+                req.flash("error", "Comment not found");
+                res.redirect("/memories/" + req.params.id);
             } else {
-                // does user own the comment?
+                // Check if the user owns the comment
+                // foundComment.author.id is an object while req.user._id is a string
                 if (foundComment.author.id.equals(req.user._id)) {
-                    next();
+                    return next();
                 } else {
-                    res.redirect("back");
+                    req.flash("error", "Permission denied");
+					res.redirect("/memories/" + req.params.id);
                 }
             }
         });
     } else {
-        res.redirect("back");
+        req.flash("error", "You need to be logged in first!");
+		res.redirect("/memories/" + req.params.id);
     }
 }
 

@@ -5,6 +5,7 @@ var express = require("express"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
     methodOverride = require("method-override"),
+    flash = require("connect-flash"),
     // Memory = require("./models/memory"),
     // Comment = require("./models/comment"),
     User = require("./models/user"),
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
+app.use(flash());
 // seedDB();
 
 // Passport Configuration
@@ -41,6 +43,8 @@ passport.deserializeUser(User.deserializeUser());
 // Pass parameters to every template
 app.use(function (req, res, next) {
     res.locals.currentUser = req.user;
+    res.locals.error = req.flash("error");
+    res.locals.success = req.flash("success");
     next();
 })
 
@@ -49,6 +53,6 @@ app.use("/memories", memoryRoutes);
 app.use("/memories/:id/comments", commentRoutes);
 
 
-app.listen(3002, function () {
-    console.log("Memory Book Server listening on port 3002");
+app.listen(3001, function () {
+    console.log("Memory Book Server listening on port 3001");
 });

@@ -1,13 +1,12 @@
 
 var express = require("express");
 var router = express.Router({ mergeParams: true });
+
 var Memory = require("../models/memory");
 var Comment = require("../models/comment");
 var middleware = require("../middleware");
 
-// ====================
-// COMMENTS ROUTES
-// ====================
+// =============== /memories/:id/comments ==================
 
 // NEW - show form to create new comment
 router.get("/new", middleware.isLoggedIn, function (req, res) {
@@ -32,6 +31,8 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
             Comment.create(req.body.comment, function (err, comment) {
                 if (err) {
                     console.log(err);
+                    req.flash("error", "Something went wrong");
+                    res.redirect("/memories");
                 } else {
                     // Add username and id to comment
                     comment.author.id = req.user._id;
@@ -40,6 +41,7 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
                     // Add comment to comment list
                     memory.comments.push(comment);
                     memory.save();
+                    req.flash("success", "Comment added successfully");
                     res.redirect('/memories/' + memory._id);
                 }
             });
@@ -49,21 +51,32 @@ router.post("/", middleware.isLoggedIn, function (req, res) {
 
 // EDIT
 router.get("/:comment_id/edit", middleware.checkCommentOwnership, function (req, res) {
-    Comment.findById(req.params.comment_id, function (err, foundComment) {
-        if (err) {
-            res.redirect("back");
+    Memory.findById(req.params.id, function (err, foundMemory) {
+        if (err || !foundMemory) {
+            req.flash("error", "Memory not found");
+            return res.redirect("/memories/" + req.params.id);
         } else {
-            res.render("comments/edit", { memory_id: req.params.id, comment: foundComment });
+            Comment.findById(req.params.comment_id, function (err, foundComment) {
+                if (err) {
+                    res.redirect("/memories/" + req.params.id);
+                } else {
+                    res.render("comments/edit", { memory_id: req.params.id, comment: foundComment });
+                }
+            })
         }
-    })
+    });
+
+
 })
 
 // UPDATE
 router.put("/:comment_id", middleware.checkCommentOwnership, function (req, res) {
     Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function (err) {
         if (err) {
-            res.redirect("back");
+            req.flash("error", "Something went wrong");
+            res.redirect("/memories/" + req.params.id);
         } else {
+            req.flash("success", "Comment updated");
             res.redirect("/memories/" + req.params.id);
         }
     })
@@ -71,10 +84,12 @@ router.put("/:comment_id", middleware.checkCommentOwnership, function (req, res)
 
 // DESTROY
 router.delete("/:comment_id", middleware.checkCommentOwnership, function (req, res) {
-    Comment.findByIdAndRemove(req.params.comment_id, function(err){
-        if(err){
-            res.redirect(back);
+    Comment.findByIdAndRemove(req.params.comment_id, function (err) {
+        if (err) {
+            req.flash("error", "Something went wrong");
+            res.redirect("/memories/" + req.params.id);
         } else {
+            req.flash("success", "Comment deleted");
             res.redirect("/memories/" + req.params.id);
         }
     })
