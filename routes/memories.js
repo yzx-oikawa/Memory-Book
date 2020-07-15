@@ -20,7 +20,7 @@ router.get("/", function (req, res) {
 });
 
 // CREATE - add new memory to DB
-router.post("/", isLoggedIn, function (req, res) {
+router.post("/", middleware.isLoggedIn, function (req, res) {
     // Get data from form and add to memories array
     var title = req.body.title;
     var image = req.body.image;
@@ -43,7 +43,7 @@ router.post("/", isLoggedIn, function (req, res) {
 });
 
 // NEW - show form to create new memory
-router.get("/new", isLoggedIn, function (req, res) {
+router.get("/new", middleware.isLoggedIn, function (req, res) {
     res.render("memories/new.ejs");
 });
 
@@ -61,12 +61,33 @@ router.get("/:id", function (req, res) {
     });
 })
 
-// Middleware
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
-}
+// EDIT
+router.get("/:id/edit", middleware.checkMemoryOwnership, function (req, res) {
+    Memory.findById(req.params.id, function (err, foundMemory) {
+        res.render("memories/edit", { memory: foundMemory });
+    })
+})
+
+// UPDATE
+router.put("/:id", middleware.checkMemoryOwnership, function (req, res) {
+    Memory.findByIdAndUpdate(req.params.id, req.body.memory, function (err, updatedMemory) {
+        if (err) {
+            res.redirect("/memories");
+        } else {
+            res.redirect("/memories/" + req.params.id);
+        }
+    })
+})
+
+// DESTROY
+router.delete("/:id", middleware.checkMemoryOwnership, function(req, res){
+    Memory.findByIdAndRemove(req.params.id, function(err) {
+        if(err) {
+            res.redirect("/memories");
+        } else {
+            res.redirect("/memories");
+        }
+    })
+})
 
 module.exports = router;

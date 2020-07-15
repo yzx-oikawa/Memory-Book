@@ -4,8 +4,9 @@ var express = require("express"),
     mongoose = require("mongoose"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
-    Memory = require("./models/memory"),
-    Comment = require("./models/comment"),
+    methodOverride = require("method-override"),
+    // Memory = require("./models/memory"),
+    // Comment = require("./models/comment"),
     User = require("./models/user"),
     seedDB = require("./seeds");
 
@@ -22,7 +23,7 @@ mongoose.connect("mongodb://localhost/memory_book", {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
-
+app.use(methodOverride("_method"));
 // seedDB();
 
 // Passport Configuration
@@ -48,6 +49,6 @@ app.use("/memories", memoryRoutes);
 app.use("/memories/:id/comments", commentRoutes);
 
 
-app.listen(3001, function () {
-    console.log("Memory Book Server listening on port 3001");
+app.listen(3002, function () {
+    console.log("Memory Book Server listening on port 3002");
 });

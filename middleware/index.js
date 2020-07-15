@@ -14,18 +14,18 @@ middlewareObj.checkMemoryOwnership = function (req, res, next) {
     if (req.isAuthenticated()) {
         Memory.findById(req.params.id, function (err, foundMemory) {
             if (err) {
-                res.redirect("back");
+                res.redirect("/memories");
             } else {
                 // does user own the memory?
                 if (foundMemory.author.id.equals(req.user._id)) {
                     next();
                 } else {
-                    res.redirect("back");
+                    res.redirect("/memories");
                 }
             }
         });
     } else {
-        res.redirect("back");
+        res.redirect("/login");
     }
 }
 
