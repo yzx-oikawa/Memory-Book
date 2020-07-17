@@ -5,36 +5,36 @@ var Comment = require("./models/comment");
 var data = [
     {
         title: "Beihang University",
-        image: "/images/Beihang University.jpg"
+        image: "/images/Beihang-University-1.jpg"
     },
     {
         title: "Saihanba National Forest Park",
-        image: "/images/Saihanba National Forest Park.jpg"
+        image: "/images/Saihanba-National-Forest-Park-1.jpg"
     },
     {
         title: "Clearwater Beach, Orlando",
-        image: "/images/Clearwater Beach.jpg"
+        image: "/images/Clearwater-Beach-1.jpg"
     },
     {
         title: "Kennedy Space Center",
-        image: "/images/Kennedy Space Center.jpg"
+        image: "/images/Kennedy-Space-Center-1.jpg"
 
     },
     {
         title: "Kiyomizu Temple",
-        image: "/images/Kiyomizu Temple.jpg"
+        image: "/images/Kiyomizu-Temple-1.jpg"
     },
     {
         title: "Kyoto University",
-        image: "/images/Kyoto University.jpg"
+        image: "/images/Kyoto-University-1.jpg"
     },
     {
         title: "Universal Studios Japan",
-        image: "/images/Universal Studios Japan.jpg"
+        image: "/images/Universal-Studios-Japan-1.jpg"
     },
     {
         title: "Beijing Solana",
-        image: "/images/Beijing Solana.jpg"
+        image: "/images/Beijing-Solana-1.jpg"
     }
 ]
 
