@@ -16,8 +16,8 @@ var indexRoutes = require("./routes/index"),
     memoryRoutes = require("./routes/memories"),
     commentRoutes = require("./routes/comments");
 
-// mongoose.connect("mongodb://localhost/memory_book", {
-mongoose.connect("mongodb+srv://zixinye:yezixin0612@mongocluster-e1iea.mongodb.net/memory_book?retryWrites=true&w=majority", {
+mongoose.connect("mongodb://localhost/memory_book", {
+// mongoose.connect("mongodb+srv://zixinye:yezixin0612@mongocluster-e1iea.mongodb.net/memory_book?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });

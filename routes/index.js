@@ -22,7 +22,7 @@ router.post("/register", function (req, res) {
     User.register(newUser, req.body.password, function (err, user) {
         if (err) {
             req.flash("error", err.message);
-            return res.render("register");
+            res.redirect("register");
         }
         passport.authenticate("local")(req, res, function () {
             req.flash("success", "Welcome to Memory Book, " + user.username + "!");

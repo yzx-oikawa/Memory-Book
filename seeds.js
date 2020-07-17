@@ -1,6 +1,7 @@
 var mongoose = require("mongoose");
 var Memory = require("./models/memory");
 var Comment = require("./models/comment");
+var User = require("./models/user");
 
 var data = [
     {
@@ -45,8 +46,17 @@ function seedDB() {
             console.log(err);
         }
         console.log("Removed all memories!");
+    });
 
+    User.findOne({ "username": "Christine" }, function (err, foundUser) {
         data.forEach(function (seed) {
+            console.log(foundUser);
+            var author = {
+                id: foundUser._id,
+                username: foundUser.username
+            }
+            seed.author = author;
+            console.log(seed);
             Memory.create(seed, function (err, memory) {
                 if (err) {
                     console.log(err)
