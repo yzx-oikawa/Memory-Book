@@ -6,36 +6,49 @@ var User = require("./models/user");
 var data = [
     {
         title: "Beihang University",
-        image: "/images/Beihang-University-1.jpg"
+        image: "/images/Beihang-University-1.jpg",
+        description: ""
     },
     {
         title: "Saihanba National Forest Park",
-        image: "/images/Saihanba-National-Forest-Park-1.jpg"
+        image: "/images/Saihanba-National-Forest-Park-1.jpg",
+        description: ""
     },
     {
         title: "Clearwater Beach, Orlando",
-        image: "/images/Clearwater-Beach-1.jpg"
+        image: "/images/Clearwater-Beach-1.jpg",
+        description: ""
     },
     {
         title: "Kennedy Space Center",
-        image: "/images/Kennedy-Space-Center-1.jpg"
+        image: "/images/Kennedy-Space-Center-1.jpg",
+        description: ""
 
     },
     {
         title: "Kiyomizu Temple",
-        image: "/images/Kiyomizu-Temple-1.jpg"
+        image: "/images/Kiyomizu-Temple-1.jpg",
+        description: ""
     },
     {
         title: "Kyoto University",
-        image: "/images/Kyoto-University-1.jpg"
+        image: "/images/Kyoto-University-1.jpg",
+        description: ""
     },
     {
         title: "Universal Studios Japan",
-        image: "/images/Universal-Studios-Japan-1.jpg"
+        image: "/images/Universal-Studios-Japan-1.jpg",
+        description: ""
     },
     {
         title: "Beijing Solana",
-        image: "/images/Beijing-Solana-1.jpg"
+        image: "/images/Beijing-Solana-1.jpg",
+        description: ""
+    },
+    {
+        title: "Red Brick Art Museum",
+        image: "/images/Red-Brick-Art-Museum-1.jpg",
+        description: ""
     }
 ]
 
