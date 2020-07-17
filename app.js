@@ -53,6 +53,6 @@ app.use("/memories", memoryRoutes);
 app.use("/memories/:id/comments", commentRoutes);
 
 
-app.listen(3001, function () {
+app.listen(process.env.PORT || 3001, function () {
     console.log("Memory Book Server listening on port 3001");
 });
