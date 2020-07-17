@@ -1,27 +1,26 @@
 <%- include("../partials/header") %>
 <div class="container">
-    <header class="jumbotron">
+    <header class="jumbotron mt-4">
         <div class="container">
-            <h1>Welcome To Memory Book!</h1>
+            <h1><span class="glyphicon glyphicon-camera"></span>  Welcome To Memory Book!</h1>
+            <hr class="my-4">
             <p>Share your memories with family and friends!</p>
             <p>
-                <a class="btn btn-primary btn-large" href="/memories/new">Add New Memory</a>
+                <a class="btn btn-dark btn-large" href="/memories/new">Add New Memory</a>
             </p>
         </div>
     </header>
 
-    <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+    <div class="row text-center">
         <% memories.forEach(function(memory){ %>
-        <div class="col-md-3 col-sm-6">
-            <div class="thumbnail">
-                <img src="<%= memory.image %>">
-                <div class="caption">
-                    <h4><%= memory.title %></h4>
+        <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+            <div class="card">
+                <img src="<%= memory.image %>" class="card-img-top" alt="<%= memory.title %>">
+                <div class="card-body">
+                  <h6 class="card-title"><%= memory.title %></h6>
+                  <a href="/memories/<%= memory._id %>" class="btn btn-outline-dark btn-sm">More Info</a>
                 </div>
-                <p>
-                    <a href="/memories/<%= memory._id %>" class="btn btn-primary">More Info</a>
-                </p>
-            </div>
+              </div>
         </div>
         <% }); %>
     </div>
