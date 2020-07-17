@@ -16,7 +16,7 @@ var indexRoutes = require("./routes/index"),
     memoryRoutes = require("./routes/memories"),
     commentRoutes = require("./routes/comments");
 
-
+// mongoose.connect("mongodb://localhost/memory_book", {
 mongoose.connect("mongodb+srv://zixinye:yezixin0612@mongocluster-e1iea.mongodb.net/memory_book?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -26,7 +26,7 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 app.use(flash());
-// seedDB();
+seedDB();
 
 // Passport Configuration
 app.use(require("express-session")({
