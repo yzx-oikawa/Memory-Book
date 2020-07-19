@@ -5,19 +5,23 @@
         <div class="col-md-3 mb-4">
             <div class="btn-group-vertical btn-group-toggle btn-block" data-toggle="buttons">
                 <label class="btn btn-outline-secondary active">
-                    <input type="radio" name="options" id="option1" checked> Photo 1
+                    <input type="radio" name="options" id="option1" checked><%= memory.images[0].name %>
                 </label>
                 <label class="btn btn-outline-secondary">
-                    <input type="radio" name="options" id="option2"> Photo 2
+                    <input type="radio" name="options" id="option2"><%= memory.images[1].name %>
                 </label>
                 <label class="btn btn-outline-secondary">
-                    <input type="radio" name="options" id="option3"> Photo 3
+                    <input type="radio" name="options" id="option3"><%= memory.images[2].name %>
                 </label>
             </div>
         </div>
         <div class="col-md-9">
             <div class="card mb-3">
-                <img src="<%= memory.image %>" class="card-img-top" alt="...">
+                <div id="showImage">
+                    <img src="<%= memory.images[0].url %>" class="card-img-top option1" alt="...">
+                    <img src="<%= memory.images[1].url %>" class="card-img-top option2 hide-img" alt="...">
+                    <img src="<%= memory.images[2].url %>" class="card-img-top option3 hide-img" alt="...">
+                </div>
                 <div class="card-body">
                     <h5 class="card-title"><%= memory.title %></h5>
                     <span class="float-right">10 days ago</span>
@@ -40,8 +44,7 @@
                 <div class="card-body">
                     <div class="text-right">
                         <a class="btn btn-success" href="/memories/<%= memory._id %>/comments/new"><i
-                                class="fas fa-plus"></i> Add New
-                            Comment</a>
+                                class="fas fa-plus"></i> Add New Comment</a>
                     </div>
                     <% if (memory.comments.length != 0) { %>
                     <hr>

@@ -25,6 +25,10 @@
 	border-top-right-radius: 0;
 }
 
+.hide-img {
+	display: none;
+}
+
 
 /* Sticky footer styles
 -------------------------------------------------- */

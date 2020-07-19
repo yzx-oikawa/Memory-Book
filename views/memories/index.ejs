@@ -15,7 +15,7 @@
         <% memories.forEach(function(memory){ %>
         <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
             <div class="card">
-                <img src="<%= memory.image %>" class="card-img-top" alt="<%= memory.title %>">
+                <img src="<%= memory.images[0].url %>" class="card-img-top" alt="<%= memory.title %>">
                 <div class="card-body">
                     <h6 class="card-title"><%= memory.title %></h6>
                     <a href="/memories/<%= memory._id %>" class="btn btn-outline-dark btn-sm">More Info</a>

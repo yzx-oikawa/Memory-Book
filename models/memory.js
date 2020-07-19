@@ -3,7 +3,12 @@ var mongoose = require("mongoose");
 // SCHEMA SETUP
 var memorySchema = new mongoose.Schema({
     title: String,
-    image: String,
+    images: [
+        {
+            name: String,
+            url: String,
+        }
+    ],
     description: String,
     author: {
         id: {
