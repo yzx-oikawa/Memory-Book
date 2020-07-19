@@ -1,7 +1,7 @@
 <%- include("../partials/header") %>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-12 text-center mt-5">
+        <div class="col-md-12 text-center">
             <h2 class="mt-5">Edit</h2>
             <h1><%= memory.title %></h1>
         </div>
@@ -11,7 +11,13 @@
                     <input class="form-control" type="text" name="memory[title]" value="<%= memory.title %>">
                 </div>
                 <div class="form-group">
-                    <input class="form-control" type="text" name="memory[image]" value="<%= memory.image %>">
+                    <input class="form-control" type="text" name="memory[images][0][url]" value="<%= memory.images[0].url %>">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="memory[images][1][url]" value="<%= memory.images[1].url %>">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="text" name="memory[images][2][url]" value="<%= memory.images[2].url %>">
                 </div>
                 <div class="form-group">
                     <input class="form-control" type="text" name="memory[description]" value="<%= memory.description %>">

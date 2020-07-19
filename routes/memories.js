@@ -22,21 +22,16 @@ router.get("/", function (req, res) {
 // CREATE - add new memory to DB
 router.post("/", middleware.isLoggedIn, function (req, res) {
     // Get data from form and add to memories array
-    var title = req.body.title;
-    var image = req.body.image;
-    var desc = req.body.description;
-    var author = {
-        id: req.user._id,
-        username: req.user.username
-    }
-    var newMemory = new Memory({ title: title, image: image, description: desc, author: author });
-    // Create a new memory and save to DB
-    newMemory.save(function (err, memory) {
+    Memory.create(req.body.memory, function(err, memory) {
         if (err) {
             console.log(err);
             req.flash("error", "Something went wrong");
             res.redirect("back");
         } else {
+            // Add username and id to memory
+            memory.author.id = req.user._id;
+            memory.author.username = req.user.username;
+            memory.save();
             // Redirect back to memories page
             req.flash("success", "Memory saved successfully");
             res.redirect("/memories");
