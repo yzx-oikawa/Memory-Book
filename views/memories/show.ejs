@@ -4,23 +4,35 @@
     <div class="row d-flex justify-content-around">
         <div class="col-md-3 mb-4">
             <div class="btn-group-vertical btn-group-toggle btn-block" data-toggle="buttons">
+                <% if (memory.images[0]) { %>
                 <label class="btn btn-outline-secondary active">
                     <input type="radio" name="options" id="option1" checked><%= memory.images[0].name %>
                 </label>
+                <% } %>
+                <% if (memory.images[1]) { %>
                 <label class="btn btn-outline-secondary">
                     <input type="radio" name="options" id="option2"><%= memory.images[1].name %>
                 </label>
+                <% } %>
+                <% if (memory.images[2]) { %>
                 <label class="btn btn-outline-secondary">
                     <input type="radio" name="options" id="option3"><%= memory.images[2].name %>
                 </label>
+                <% } %>
             </div>
         </div>
         <div class="col-md-9">
             <div class="card mb-3">
                 <div id="showImage">
+                    <% if (memory.images[0]) { %>
                     <img src="<%= memory.images[0].url %>" class="card-img-top option1" alt="...">
+                    <% } %>
+                    <% if (memory.images[1]) { %>
                     <img src="<%= memory.images[1].url %>" class="card-img-top option2 hide-img" alt="...">
+                    <% } %>
+                    <% if (memory.images[2]) { %>
                     <img src="<%= memory.images[2].url %>" class="card-img-top option3 hide-img" alt="...">
+                    <% } %>
                 </div>
                 <div class="card-body">
                     <h5 class="card-title"><%= memory.title %></h5>
@@ -36,7 +48,7 @@
                     <form id="delete-form" action="/memories/<%= memory._id %>?_method=DELETE" method="POST">
                         <button class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></button>
                     </form>
-                    <% }%>
+                    <% } %>
                 </div>
             </div>
 
@@ -50,7 +62,7 @@
                     <hr>
                     <% } %>
                     <div class="row">
-                        <% memory.comments.forEach(function(comment){ %>
+                        <% memory.comments.forEach(function(comment) { %>
                         <div class="col-md-12 mb-3">
                             <strong><%= comment.author.username %></strong>
                             <span class="float-right">10 days ago</span>
